@@ -7,7 +7,16 @@ buildscript {
     }
 }
 
-apply plugin: 'gulp'
+plugins {
+    id 'com.moowork.node' version '0.10'
+}
+apply plugin: 'com.moowork.node'
+
+node {
+    version = '0.12.7'
+    npmVersion = '3.3.3'
+    download = true
+}
 
 dependencies {
     ext {
@@ -60,4 +69,10 @@ task unitTest(type: Test) {
     exclude 'acceptance/**'
 }
 
-assemble.dependsOn gulp_build
+task npmBuild(dependsOn: npmInstall, type: NpmTask) {
+    inputs.file 'gulpfile.js'
+    args = ['run', 'gulp']
+}
+
+
+assemble.dependsOn npmBuild
